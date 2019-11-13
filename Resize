@@ -1,0 +1,43 @@
+<?php
+
+function image_resizing($image, $type, $ext, $file_name) {
+    strtolower($ext);
+    list($src_width, $src_height) = getimagesize($image);
+    switch($ext) {
+        case 'gif':
+        $image_create = 'imagecreatefromgif';
+        break;
+
+        case 'png':
+        $image_create = 'imagecreatefrompng';
+        break;
+
+        default:
+        $image_create = 'imagecreatefromjpeg';
+        break;        
+    } 
+
+    $temp_img = $image_create($image);
+
+    if($type == 'wide') {
+        $width = 1920;
+        $height = 2160;
+    } else if($type == 'content') {
+        $height = 600;
+        $width = 400;
+    }
+
+    $src_x = ($src_width - $width) / 2;
+    $src_y = ($src_height - $height) / 2;
+
+    $new_image = imagecreatetruecolor($width, $height);
+    //imagecopyresampled ($new_image, $temp_img, 0, 0, $src_x, $src_y, $width, $height, $src_width, $src_height);
+	imagecopyresampled ($new_image, $temp_img, 0, 0, $src_x, $src_y, $width,    $height,    $width, $height);
+    $image_dest = '';
+	
+	imagejpeg($new_image, $file_name);
+ echo 'done';
+    //imagejpeg($new_image, $file_name, $quality);
+}
+
+echo image_resizing('https://www.bannerpen.org/images/qq2.jpg', 'content', 'jpg', 'ss.jpg');
